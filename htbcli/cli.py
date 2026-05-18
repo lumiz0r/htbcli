@@ -111,9 +111,10 @@ def auth(clear: bool, token: str) -> None:
               type=click.Choice(["linux", "windows", "freebsd", "openbsd", "android"], case_sensitive=False),
               help="Filter by operating system.")
 @click.option("--retired", "-r", is_flag=True, help="Include retired machines.")
-@click.option("--limit", "-l", default=25, show_default=True, help="Max results.")
+@click.option("--limit", "-l", default=25, show_default=True, help="Results per page.")
+@click.option("--page", "-p", default=1, show_default=True, help="Page number.")
 @click.option("--refresh", is_flag=True, help="Force-refresh the local machine cache.")
-def search(query: str, difficulty: str, os: str, retired: bool, limit: int, refresh: bool) -> None:
+def search(query: str, difficulty: str, os: str, retired: bool, limit: int, page: int, refresh: bool) -> None:
     """Search and filter machines.
 
     \b
@@ -121,6 +122,7 @@ def search(query: str, difficulty: str, os: str, retired: bool, limit: int, refr
       htb search
       htb search lame
       htb search -d easy -o linux
+      htb search -d easy -o linux -p 2
       htb search --retired -d hard
     """
     client = _client()
@@ -146,18 +148,25 @@ def search(query: str, difficulty: str, os: str, retired: bool, limit: int, refr
         machines = [m for m in machines
                     if (m.get("os") or "").lower() == os.lower()]
 
-    machines = machines[:limit]
-
-    if not machines:
+    total = len(machines)
+    if not total:
         display.warn("No machines found matching your filters.")
         return
 
-    label = f"RESULTS [{len(machines)}]"
+    total_pages = max(1, (total + limit - 1) // limit)
+    page = max(1, min(page, total_pages))
+    start = (page - 1) * limit
+    machines = machines[start : start + limit]
+
+    label = f"RESULTS [{total}]  page {page}/{total_pages}"
     if query:
         label += f" — \"{query}\""
 
     display.console.print(display.machines_table(machines, title=label))
-    display.info(f"Run [bold]htb info <name>[/bold] or [bold]htb spawn <name>[/bold] to continue.")
+    if total_pages > 1:
+        display.info(f"Page {page}/{total_pages} — use [bold]-p {page + 1}[/bold] for next" if page < total_pages else f"Page {page}/{total_pages} — last page")
+    else:
+        display.info(f"Run [bold]htb info <name>[/bold] or [bold]htb spawn <name>[/bold] to continue.")
 
 
 # ── spawn ─────────────────────────────────────────────────────────────────────
