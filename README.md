@@ -45,7 +45,7 @@ export HTB_TOKEN="your_token_here"
 | `htb search` | List all active machines |
 | `htb search <query>` | Search machines by name |
 | `htb search -d easy -o linux` | Filter by difficulty + OS |
-| `htb search -s web --retired` | Filter by skill/tag, include retired |
+| `htb search --retired -d hard` | Include retired machines |
 | `htb info <name\|id>` | Show detailed machine info |
 | `htb spawn <name\|id>` | Spawn a machine |
 | `htb status` | Show currently active machine + IP |
@@ -80,4 +80,4 @@ htb submit 3f3ef188c3694b3d5428b949b6a1d048
 
 - Spawning machines requires an **active VPN connection** or HTB Pwnbox.
 - Spawning retired machines requires a **VIP subscription**.
-- The `--skill` / `--tag` filter matches against machine labels (e.g. `web`, `forensics`, `crypto`). Not all machines have labels.
+- The machine catalog is cached locally for 6 hours. Run `htb refresh` to force an update.
