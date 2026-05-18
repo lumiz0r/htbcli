@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "htbcli"
+version = "0.1.0"
+description = "HackTheBox CLI — hack smarter, not harder"
+requires-python = ">=3.11"
+dependencies = [
+    "click>=8.1",
+    "rich>=13.0",
+    "requests>=2.31",
+]
+
+[project.scripts]
+htb = "htbcli.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["htbcli*"]

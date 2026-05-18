@@ -1,0 +1,23 @@
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+env/
+
+# Secrets & local config (token is stored here)
+*.env
+.env*
+config.json
+machines_cache.json
+
+# IDE
+.idea/
+.vscode/
+*.swp
